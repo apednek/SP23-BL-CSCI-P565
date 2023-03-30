@@ -3,6 +3,7 @@ package edu.iu.p565.customerservice.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import edu.iu.p565.customerservice.model.Customer;
@@ -25,17 +26,22 @@ public class CustomerController {
 
     @PostMapping
     public int create(@Valid @RequestBody Customer customer) {
-        return repository.create(customer);
+        Customer addedCustomer = repository.save(customer);
+        return addedCustomer.getId();
     }
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void update(@Valid @RequestBody Customer customer, @PathVariable int id) {
-        repository.update(customer, id);
+        customer.setId(id);
+        repository.save(customer);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete( @PathVariable int id) {
-        repository.delete(id);
+        Customer customer = new Customer();
+        customer.setId(id);
+        repository.delete(customer);
     }
 
 }
